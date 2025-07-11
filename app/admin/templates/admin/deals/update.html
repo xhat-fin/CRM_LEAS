@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование сделки {{ deal.id }} | Лизинг CRM{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Редактирование сделки #{{ deal.id }}</h5>
+        <a href="{{ url_for('admin.get_deals') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Назад к списку
+        </a>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('admin.update_deal', id=deal.id) }}">
+            <div class="row">
+                <!-- Основная информация -->
+                <div class="col-md-6">
+                    <div class="form-section">
+                        <h6 class="form-section-title">Основная информация</h6>
+
+                        <div class="mb-3">
+                            <label for="manager_id" class="form-label">Менеджер</label>
+                            <select class="form-select" id="manager_id" name="manager_id">
+                                <option value="">Выберите менеджера</option>
+                                {% for manager in managers %}
+                                    <option value="{{ manager.id }}" {% if deal.manager_id == manager.id %}selected{% endif %}>
+                                        {{ manager.full_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="client_id" class="form-label">Клиент</label>
+                            <select class="form-select" id="client_id" name="client_id">
+                                <option value="">Выберите клиента</option>
+                                {% for client in clients %}
+                                    <option value="{{ client.id }}" {% if deal.client_id == client.id %}selected{% endif %}>
+                                        {{ client.client_name }} ({{ client.unp }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="application_status" class="form-label">Статус заявки</label>
+                            <select class="form-select" id="application_status" name="application_status">
+                                {% for status in statuses %}
+                                    <option value="{{ status }}" {% if deal.application_status == status %}selected{% endif %}>{{ status }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="first_contact_date" class="form-label">Дата первого контакта</label>
+                            <input type="date" class="form-control" id="first_contact_date" name="first_contact_date"
+                                   value="{{ deal.first_contact_date.strftime('%Y-%m-%d') if deal.first_contact_date else '' }}">
+                        </div>
+                    </div>
+
+                    <!-- Информация о автомобиле -->
+                    <div class="form-section">
+                        <h6 class="form-section-title">Информация о автомобиле</h6>
+
+                        <div class="mb-3">
+                            <label for="car_brand" class="form-label">Марка автомобиля</label>
+                            <input type="text" class="form-control" id="car_brand" name="car_brand"
+                                   value="{{ deal.car_brand or '' }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="car_seller" class="form-label">Продавец автомобиля</label>
+                            <input type="text" class="form-control" id="car_seller" name="car_seller"
+                                   value="{{ deal.car_seller or '' }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="is_electric_car" value="off">
+                                <input type="checkbox" name="is_electric_car" value="on"
+                                       id="is_electric_car" {{ 'checked' if deal.is_electric_car else '' }}>
+                                <label class="form-check-label" for="is_electric_car">Электромобиль</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="planned_shipment_date" class="form-label">Планируемая дата отгрузки</label>
+                            <input type="date" class="form-control" id="planned_shipment_date" name="planned_shipment_date"
+                                   value="{{ deal.planned_shipment_date.strftime('%Y-%m-%d') if deal.planned_shipment_date else '' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Финансовые условия -->
+                <div class="col-md-6">
+                    <div class="form-section">
+                        <h6 class="form-section-title">Финансовые условия</h6>
+
+                        <div class="mb-3">
+                            <label for="financing_amount_usd_with_vat" class="form-label">Сумма финансирования (USD с НДС)</label>
+                            <input type="number" step="0.01" class="form-control" id="financing_amount_usd_with_vat" name="financing_amount_usd_with_vat"
+                                   value="{{ deal.financing_amount_usd_with_vat or '' }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="prepayment" class="form-label">Авансовый платеж (%)</label>
+                            <input type="number" step="0.01" class="form-control" id="prepayment" name="prepayment"
+                                   value="{{ deal.prepayment or '' }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="first_payment" class="form-label">Первый платеж (%)</label>
+                            <input type="number" step="0.01" class="form-control" id="first_payment" name="first_payment"
+                                   value="{{ deal.first_payment or '' }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="term" class="form-label">Срок (мес.)</label>
+                            <input type="number" class="form-control" id="term" name="term"
+                                   value="{{ deal.term or '' }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="interest_rate" class="form-label">Процентная ставка (%)</label>
+                            <input type="number" step="0.01" class="form-control" id="interest_rate" name="interest_rate"
+                                   value="{{ deal.interest_rate or '' }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="effective_rate" class="form-label">Эффективная ставка (%)</label>
+                            <input type="number" step="0.01" class="form-control" id="effective_rate" name="effective_rate" 
+                                   value="{{ deal.effective_rate or '' }}">
+                        </div>
+                    </div>
+                    
+                    <!-- Дополнительные параметры -->
+                    <div class="form-section">
+                        <h6 class="form-section-title">Дополнительные параметры</h6>
+                        
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="is_express" value="off">
+                                <input type="checkbox" name="is_express" value="on"
+                                       id="is_express" {{ 'checked' if deal.is_express else '' }}>
+                                <label class="form-check-label" for="is_express">Экспресс-сделка</label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="expert_id" class="form-label">Эксперт КЭ</label>
+                            <select class="form-select" id="expert_id" name="expert_id">
+                                <option value="">Не назначен</option>
+                                {% for expert in experts %}
+                                    <option value="{{ expert.id }}" {% if deal.expert_id == expert.id %}selected{% endif %}>
+                                        {{ expert.full_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="creditworthiness" class="form-label">Кредитоспособность</label>
+                            <select class="form-select" id="creditworthiness" name="creditworthiness">
+                                {% for level in creditworthiness_levels %}
+                                    <option value="{{ level }}" {% if deal.creditworthiness == level %}selected{% endif %}>{{ level }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Документы и процесс -->
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-section">
+                        <h6 class="form-section-title">Документы</h6>
+                        
+                        <div class="mb-3">
+                            <label for="skp_or_bl" class="form-label">СКП/БЛ</label>
+                            <input type="text" class="form-control" id="skp_or_bl" name="skp_or_bl" 
+                                   value="{{ deal.skp_or_bl or '' }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="originals_or_scans" class="form-label">Тип документов</label>
+                            <select class="form-select" id="originals_or_scans" name="originals_or_scans">
+                                {% for type in originals_types %}
+                                    <option value="{{ type }}" {% if deal.originals_or_scans == type %}selected{% endif %}>{{ type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input type="hidden" name="pv_in_sap" value="off">
+                                <input type="checkbox" name="pv_in_sap" value="on"
+                                       id="pv_in_sap" {{ 'checked' if deal.pv_in_sap else '' }}>
+                                <label class="form-check-label" for="pv_in_sap">ПВ в SAP</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-section">
+                        <h6 class="form-section-title">Процесс согласования</h6>
+                        
+                        <div class="mb-3">
+                            <label for="decision_making_body" class="form-label">Орган принятия решения</label>
+                            <select class="form-select" id="decision_making_body" name="decision_making_body">
+                                {% for body in decision_bodies %}
+                                    <option value="{{ body }}" {% if deal.decision_making_body == body %}selected{% endif %}>{{ body }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="application_datetime" class="form-label">Дата подачи заявки</label>
+                            <input type="datetime-local" class="form-control" id="application_datetime" name="application_datetime" 
+                                   value="{{ deal.application_datetime.strftime('%Y-%m-%dT%H:%M') if deal.application_datetime else '' }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="transfer_to_ke_datetime" class="form-label">Дата передачи в КЭ</label>
+                            <input type="datetime-local" class="form-control" id="transfer_to_ke_datetime" name="transfer_to_ke_datetime" 
+                                   value="{{ deal.transfer_to_ke_datetime.strftime('%Y-%m-%dT%H:%M') if deal.transfer_to_ke_datetime else '' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Комментарии и примечания -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="form-section">
+                        <h6 class="form-section-title">Комментарии и примечания</h6>
+                        
+                        <div class="mb-3">
+                            <label for="deal_comment" class="form-label">Комментарий к сделке</label>
+                            <textarea class="form-control" id="deal_comment" name="deal_comment" rows="3">{{ deal.deal_comment or '' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description_manager" class="form-label">Примечание менеджера</label>
+                            <textarea class="form-control" id="description_manager" name="description_manager" rows="2">{{ deal.description_manager or '' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description_ke" class="form-label">Примечание КЭ</label>
+                            <textarea class="form-control" id="description_ke" name="description_ke" rows="2">{{ deal.description_ke or '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Сохранить изменения
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,10 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Добавление нового клиента{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Добавление нового клиента</h1>
+        <a href="{{ url_for('admin.get_clients') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Назад к списку
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Основная информация</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.create_client') }}">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="client_name" class="form-label">Наименование клиента</label>
+                            <input type="text" class="form-control" id="client_name" name="client_name">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="unp" class="form-label">УНП <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="unp" name="unp" required>
+                            <small class="form-text text-muted">Обязательное поле</small>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="type_client" class="form-label">Тип клиента</label>
+                            <select class="form-select" id="type_client" name="type_client">
+                                <option value="">Не указано</option>
+                                <option value="Юридическое лицо">Юридическое лицо</option>
+                                <option value="Индивидуальный предприниматель">ИП</option>
+                                <option value="Физическое лицо">Физ. лицо</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="egr_phone" class="form-label">Телефон</label>
+                            <input type="tel" class="form-control" id="egr_phone" name="egr_phone">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="registration_date" class="form-label">Дата регистрации</label>
+                            <input type="date" class="form-control" id="registration_date" name="registration_date">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="address" class="form-label">Адрес</label>
+                            <input type="text" class="form-control" id="address" name="address">
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Сохранить
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-undo me-1"></i> Очистить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

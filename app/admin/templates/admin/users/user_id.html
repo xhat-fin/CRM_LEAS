@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.full_name }} | Профиль</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --text-color: #2b2d42;
+            --light-gray: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 500;
+            margin-right: 20px;
+        }
+
+        .user-info {
+            flex-grow: 1;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .username {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .detail-card {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .detail-card:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .detail-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            color: inherit;
+            opacity: 0.8;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<a href="{{ url_for('auth.logout') }}">Выход из приложения</a>
+    <div class="container">
+        <a href="{{ url_for('admin.get_users') }}" class="back-link">← Назад к списку</a>
+
+        <div class="profile-header">
+            <div class="avatar">
+                {{ user.full_name|first|upper }}
+            </div>
+            <div class="user-info">
+                <h1>{{ user.full_name }}</h1>
+                <div class="username">@{{ user.username }}</div>
+            </div>
+        </div>
+
+        <div class="details">
+            <div class="detail-card">
+                <div class="detail-label">ID пользователя</div>
+                <div class="detail-value">{{ user.id }}</div>
+            </div>
+
+            <div class="detail-card">
+                <div class="detail-label">Дата регистрации</div>
+                <div class="detail-value">{{ user.created_at[:10] }}</div>
+            </div>
+
+            <div class="detail-card">
+                <div class="detail-label">Последнее обновление</div>
+                <div class="detail-value">{{ user.updated_at[:10] if user.updated_at else 'Нет данных' }}</div>
+            </div>
+
+            <div class="detail-card">
+                <div class="detail-label">Роль</div>
+                <div class="detail-value">
+                    {{ user.role.name }}
+                    <span class="role-badge">Доступ: {{ user.role.access_level }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

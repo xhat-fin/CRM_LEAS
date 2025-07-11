@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+
+{% block title %}Сделка #{{ deal.id }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Сделка #{{ deal.id }}</h1>
+        <div class="d-flex align-items-center">
+            <span class="status-badge bg-primary me-2">{{ deal.application_status }}</span>
+            {% if deal.is_express %}
+            <span class="status-badge bg-warning text-dark me-2">Экспресс</span>
+            {% endif %}
+            {% if deal.is_electric_car %}
+            <span class="status-badge bg-success">Электромобиль</span>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <a href="{{ url_for('admin.get_deals') }}" class="btn btn-outline-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i> К списку
+        </a>
+        <a href="#" class="btn btn-primary me-2">
+            <i class="fas fa-edit me-1"></i> Редактировать
+        </a>
+        <form action="#" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить сделку?')">
+                <i class="fas fa-trash me-1"></i> Удалить
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Основная колонка -->
+    <div class="col-lg-8">
+        <!-- Основная информация -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-info-circle me-2"></i> Основная информация
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <h5 class="form-section-title">Автомобиль</h5>
+                            <div class="d-flex flex-wrap mb-2">
+                                <span class="detail-label">Марка:</span>
+                                <span class="detail-value">{{ deal.car_brand or '-' }}</span>
+                            </div>
+                            <div class="d-flex flex-wrap mb-2">
+                                <span class="detail-label">Продавец:</span>
+                                <span class="detail-value">{{ deal.car_seller or '-' }}</span>
+                            </div>
+                            <div class="d-flex flex-wrap mb-2">
+                                <span class="detail-label">СКП/BL:</span>
+                                <span class="detail-value">{{ deal.skp_or_bl or '-' }}</span>
+                            </div>
+                            <div class="d-flex flex-wrap">
+                                <span class="detail-label">Подписание отгрузки:</span>
+                                <span class="detail-value">{{ deal.shipment_signing or '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="form-section-title">Финансы</h5>
+                        <div class="d-flex flex-wrap mb-2">
+                            <span class="detail-label">Сумма финансирования:</span>
+                            <span class="detail-value">
+                                {% if deal.financing_amount_usd_with_vat %}
+                                {{ "%.2f"|format(deal.financing_amount_usd_with_vat) }} $
+                                {% else %}
+                                -
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="d-flex flex-wrap mb-2">
+                            <span class="detail-label">Сумма на заключении:</span>
+                            <span class="detail-value">
+                                {% if deal.deal_amount_at_conclusion %}
+                                {{ "%.2f"|format(deal.deal_amount_at_conclusion) }} {{ deal.deal_currency or deal.dfl_currency }}
+                                {% else %}
+                                -
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="d-flex flex-wrap mb-2">
+                            <span class="detail-label">Процентная ставка:</span>
+                            <span class="detail-value">
+                                {% if deal.interest_rate %}
+                                {{ "%.2f"|format(deal.interest_rate) }}%
+                                {% else %}
+                                -
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="d-flex flex-wrap mb-2">
+                            <span class="detail-label">Эффективная ставка:</span>
+                            <span class="detail-value">
+                                {% if deal.effective_rate %}
+                                {{ "%.2f"|format(deal.effective_rate) }}%
+                                {% else %}
+                                -
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="d-flex flex-wrap mb-2">
+                            <span class="detail-label">Срок:</span>
+                            <span class="detail-value">{{ deal.term or '-' }}</span>
+                        </div>
+                        <div class="d-flex flex-wrap">
+                            <span class="detail-label">Авансовый платеж:</span>
+                            <span class="detail-value">
+                                {% if deal.prepayment %}
+                                {{ "%.2f"|format(deal.prepayment) }}%
+                                {% else %}
+                                -
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Участники сделки -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <i class="fas fa-users me-2"></i> Участники
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 bg-light rounded">
+                            <h5 class="d-flex align-items-center">
+                                <i class="fas fa-user-tie me-2"></i> Менеджер
+                            </h5>
+                            <p class="mb-1 fw-bold">{{ deal.manager.name }}</p>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 bg-light rounded">
+                            <h5 class="d-flex align-items-center">
+                                <i class="fas fa-building me-2"></i> Клиент
+                            </h5>
+                            <p class="mb-1 fw-bold">{{ deal.client.name }}</p>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <h5 class="d-flex align-items-center">
+                                <i class="fas fa-user-shield me-2"></i> Эксперт
+                            </h5>
+                            {% if deal.expert %}
+                            <p class="mb-1 fw-bold">{{ deal.expert.full_name }}</p>
+                            <p class="mb-1 text-muted small">
+                                <i class="far fa-calendar-alt me-1"></i>
+                                Принята: {{ deal.application_datetime|datetimeformat or '-' }}
+                            </p>
+                            {% else %}
+                            <p class="mb-1 text-muted">Не назначен</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Хронология сделки -->
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <i class="fas fa-history me-2"></i> Хронология
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    {% if deal.first_contact_date %}
+                    <div class="timeline-item">
+                        <h6>Первый контакт</h6>
+                        <div class="timeline-date">{{ deal.first_contact_date|dateformat }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if deal.application_datetime %}
+                    <div class="timeline-item">
+                        <h6>Заявка создана</h6>
+                        <div class="timeline-date">{{ deal.application_datetime|datetimeformat }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if deal.transfer_to_ke_datetime %}
+                    <div class="timeline-item">
+                        <h6>Передана в КЭ</h6>
+                        <div class="timeline-date">{{ deal.transfer_to_ke_datetime|datetimeformat }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if deal.kk_datetime %}
+                    <div class="timeline-item">
+                        <h6>Кредитный комитет</h6>
+                        <div class="timeline-date">{{ deal.kk_datetime|datetimeformat }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if deal.protocol_date %}
+                    <div class="timeline-item">
+                        <h6>Протокол</h6>
+                        <div class="timeline-date">{{ deal.protocol_date|dateformat }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if deal.dfl_signing_date %}
+                    <div class="timeline-item">
+                        <h6>Подписание ДФЛ</h6>
+                        <div class="timeline-date">{{ deal.dfl_signing_date|dateformat }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if deal.planned_shipment_date %}
+                    <div class="timeline-item">
+                        <h6>Плановая отгрузка</h6>
+                        <div class="timeline-date">{{ deal.planned_shipment_date|dateformat }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if deal.car_shipment_date %}
+                    <div class="timeline-item">
+                        <h6>Фактическая отгрузка</h6>
+                        <div class="timeline-date">{{ deal.car_shipment_date|dateformat }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Документы и сертификаты -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <i class="fas fa-file-alt me-2"></i> Документы
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-flex flex-wrap mb-2">
+                            <span class="detail-label">Оригиналы/сканы:</span>
+                            <span class="detail-value">{{ deal.originals_or_scans or '-' }}</span>
+                        </div>
+                        <div class="d-flex flex-wrap mb-2">
+                            <span class="detail-label">Орган принятия решения:</span>
+                            <span class="detail-value">{{ deal.decision_making_body or '-' }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex flex-wrap mb-2">
+                            <span class="detail-label">Заявленный сертификат:</span>
+                            <span class="detail-value">{{ deal.applied_certificate or '-' }}</span>
+                        </div>
+                        <div class="d-flex flex-wrap">
+                            <span class="detail-label">Выданный сертификат:</span>
+                            <span class="detail-value">{{ deal.issued_certificate or '-' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Боковая колонка -->
+    <div class="col-lg-4">
+        <!-- Техническая информация -->
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <i class="fas fa-cogs me-2"></i> Техническая информация
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap mb-2">
+                    <span class="detail-label">ID сделки:</span>
+                    <span class="detail-value">{{ deal.id }}</span>
+                </div>
+                <div class="d-flex flex-wrap mb-2">
+                    <span class="detail-label">Создана:</span>
+                    <span class="detail-value">{{ deal.created_at|datetimeformat }}</span>
+                </div>
+                <div class="d-flex flex-wrap mb-2">
+                    <span class="detail-label">Обновлена:</span>
+                    <span class="detail-value">{{ deal.updated_at|datetimeformat }}</span>
+                </div>
+                <div class="d-flex flex-wrap mb-2">
+                    <span class="detail-label">PV в SAP:</span>
+                    <span class="detail-value">
+                        {% if deal.pv_in_sap %}
+                        <span class="badge bg-success">Да</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Нет</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="d-flex flex-wrap mb-2">
+                    <span class="detail-label">Агент:</span>
+                    <span class="detail-value">{{ deal.agent_name or '-' }}</span>
+                </div>
+                <div class="d-flex flex-wrap">
+                    <span class="detail-label">Кредитоспособность:</span>
+                    <span class="detail-value">
+                        {% if deal.creditworthiness %}
+                        <span class="badge
+                            {% if deal.creditworthiness == 'Высокий' %}bg-success
+                            {% elif deal.creditworthiness == 'Средний' %}bg-warning text-dark
+                            {% elif deal.creditworthiness == 'Низкий' %}bg-danger
+                            {% else %}bg-secondary{% endif %}">
+                            {{ deal.creditworthiness }}
+                        </span>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Дополнительная информация -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <i class="fas fa-info-circle me-2"></i> Дополнительно
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap mb-2">
+                    <span class="detail-label">Дней в стоп-листе:</span>
+                    <span class="detail-value">
+                        {% if deal.stop_list_duration %}
+                        {{ deal.stop_list_duration.days }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="d-flex flex-wrap mb-3">
+                    <span class="detail-label">Комментарии по задержке:</span>
+                    <span class="detail-value">{{ deal.delay_comments or '-' }}</span>
+                </div>
+                <div class="mb-3">
+                    <h6>Причина отказа клиента:</h6>
+                    <div class="comment-box">
+                        {{ deal.client_refusal_reason or 'Нет информации' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Комментарии -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-comments me-2"></i> Комментарии
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6>От менеджера:</h6>
+                    <div class="comment-box">
+                        {{ deal.description_manager or 'Нет комментариев' }}
+                    </div>
+                </div>
+                <div>
+                    <h6>От кредитного эксперта:</h6>
+                    <div class="comment-box">
+                        {{ deal.description_ke or 'Нет комментариев' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

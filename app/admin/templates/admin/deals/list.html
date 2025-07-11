@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}Список сделок{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Список сделок</h1>
+    <a href="{{ url_for('admin.create_deal') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Новая сделка
+    </a>
+</div>
+
+<!-- Фильтры -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-filter me-1"></i> Фильтры
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('admin.get_deals') }}" id="filter-form">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Менеджер</label>
+                    <select name="manager_id" class="form-select">
+                        <option value="">Все менеджеры</option>
+                        {% for manager in managers %}
+                        <option value="{{ manager.id }}" {% if request.args.get('manager_id')|string == manager.id|string %}selected{% endif %}>
+                            {{ manager.full_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Клиент</label>
+                    <select name="client_id" class="form-select">
+                        <option value="">Все клиенты</option>
+                        {% for client in clients %}
+                        <option value="{{ client.id }}" {% if request.args.get('client_id')|string == client.id|string %}selected{% endif %}>
+                            {{ client.client_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Статус</label>
+                    <select name="status" class="form-select">
+                        <option value="">Все статусы</option>
+                        {% for status in statuses %}
+                        <option value="{{ status }}" {% if request.args.get('status') == status %}selected{% endif %}>
+                            {{ status }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Тип сделки</label>
+                    <select name="is_express" class="form-select">
+                        <option value="">Все</option>
+                        <option value="true" {% if request.args.get('is_express') == 'true' %}selected{% endif %}>Экспресс</option>
+                        <option value="false" {% if request.args.get('is_express') == 'false' %}selected{% endif %}>Обычные</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Дата от</label>
+                    <input type="date" name="start_date" class="form-control" value="{{ request.args.get('start_date') }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Дата до</label>
+                    <input type="date" name="end_date" class="form-control" value="{{ request.args.get('end_date') }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">На странице</label>
+                    <select name="per_page" class="form-select" id="per-page-select">
+                        <option value="10" {% if request.args.get('per_page') == '10' %}selected{% endif %}>10</option>
+                        <option value="20" {% if not request.args.get('per_page') or request.args.get('per_page') == '20' %}selected{% endif %}>20</option>
+                        <option value="50" {% if request.args.get('per_page') == '50' %}selected{% endif %}>50</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter me-1"></i> Применить
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Примененные фильтры -->
+{% if request.args %}
+<div class="card mb-4">
+    <div class="card-body py-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong class="me-2">Фильтры:</strong>
+                {% for key, value in request.args.items() %}
+                    {% if key not in ['page', 'per_page'] and value %}
+                        <span class="badge bg-light text-dark border me-2">
+                            {% if key == 'manager_id' %}
+                                Менеджер: {{ managers|selectattr('id', 'equalto', value|int)|map(attribute='full_name')|first }}
+                            {% elif key == 'client_id' %}
+                                Клиент: {{ clients|selectattr('id', 'equalto', value|int)|map(attribute='client_name')|first }}
+                            {% elif key == 'status' %}
+                                Статус: {{ value }}
+                            {% elif key == 'is_express' %}
+                                Тип: {{ 'Экспресс' if value == 'true' else 'Обычные' }}
+                            {% elif key == 'start_date' %}
+                                Дата от: {{ value }}
+                            {% elif key == 'end_date' %}
+                                Дата до: {{ value }}
+                            {% endif %}
+                            <a href="{{ url_for('admin.get_deals', **{key: ''}) }}" class="ms-1 text-danger"><i class="fas fa-times"></i></a>
+                        </span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <a href="{{ url_for('admin.get_deals') }}" class="btn btn-sm btn-outline-danger">
+                <i class="fas fa-times me-1"></i> Сбросить
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Таблица сделок -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <i class="fas fa-table me-1"></i>
+            Сделки
+            <span class="badge bg-secondary ms-2">{{ meta.total }} всего</span>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if not deals %}
+        <div class="empty-state">
+            <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
+            <h5 class="mb-2">Сделки не найдены</h5>
+            <p class="text-muted">Попробуйте изменить параметры фильтрации</p>
+            <a href="{{ url_for('admin.get_deals') }}" class="btn btn-outline-primary mt-2">
+                Сбросить фильтры
+            </a>
+        </div>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Клиент</th>
+                        <th>Марка авто</th>
+                        <th>Менеджер</th>
+                        <th>Статус</th>
+                        <th>Сумма</th>
+                        <th>Дата создания</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for deal in deals %}
+                    <tr>
+                        <td>{{ deal.id }}</td>
+                        <td>{{ deal.client.name }}</td>
+                        <td>{{ deal.car_brand or '-' }}</td>
+                        <td>{{ deal.manager.full_name }}</td>
+                        <td>
+                            <span class="badge bg-primary">{{ deal.application_status }}</span>
+                            {% if deal.is_express %}
+                            <span class="badge bg-warning text-dark">Экспресс</span>
+                            {% endif %}
+                            {% if deal.is_electric_car %}
+                            <span class="badge bg-success">Электромобиль</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if deal.financing_amount %}
+                            {{ "%.2f"|format(deal.financing_amount) }} {{ deal.dfl_currency }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ deal.created_at|datetimeformat }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.get_deal', deal_id=deal.id) }}" class="btn btn-sm btn-primary" title="Просмотр">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ url_for('admin.update_deal', id=deal.id) }}" class="btn btn-sm btn-warning" title="Редактировать">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action=" {{ url_for('admin.delete_deal', id=deal.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger" title="Удалить" onclick="return confirm('Вы уверены, что хотите удалить сделку?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <!-- Пагинация -->
+        {% if meta.total > meta.per_page %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if meta.page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.get_deals', page=meta.page-1, **request.args) }}">
+                        &laquo; Назад
+                    </a>
+                </li>
+                {% for p in range(1, (meta.total // meta.per_page) + 2) %}
+                    {% if p >= meta.page-2 and p <= meta.page+2 %}
+                    <li class="page-item {% if meta.page == p %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin.get_deals', page=p, **request.args) }}">{{ p }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not meta.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.get_deals', page=meta.page+1, **request.args) }}">
+                        Вперед &raquo;
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Функция для создания URL с фильтрами
+    function buildFilterUrl(params = {}) {
+        const form = document.getElementById('filter-form');
+        const formData = new FormData(form);
+        const searchParams = new URLSearchParams();
+
+        // Добавляем только заполненные значения из формы
+        for (const [key, value] of formData.entries()) {
+            if (value && value !== '') {
+                searchParams.append(key, value);
+            }
+        }
+
+        // Добавляем дополнительные параметры (например, для пагинации)
+        for (const [key, value] of Object.entries(params)) {
+            if (value !== undefined && value !== null && value !== '') {
+                searchParams.set(key, value);
+            }
+        }
+
+        return '{{ url_for("admin.get_deals") }}?' + searchParams.toString();
+    }
+
+    // Обработка отправки формы
+    document.getElementById('filter-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        window.location.href = buildFilterUrl({page: 1});
+    });
+
+    // Обработка изменения количества элементов на странице
+    document.getElementById('per-page-select').addEventListener('change', function() {
+        window.location.href = buildFilterUrl({per_page: this.value, page: 1});
+    });
+</script>
+{% endblock %}

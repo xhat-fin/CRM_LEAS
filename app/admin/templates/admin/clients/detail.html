@@ -1,10 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Карточка клиента</h1>
+        <div>
+            <a href="{{ url_for('admin.get_clients') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Назад к списку
+            </a>
+            {% if not client.is_deleted %}
+            <a href="#" class="btn btn-warning">
+                <i class="fas fa-edit me-1"></i> Редактировать
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Основная информация</h5>
+            {% if client.is_deleted %}
+            <span class="badge bg-danger">Удален</span>
+            {% else %}
+            <span class="badge bg-success">Активен</span>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">ID:</dt>
+                        <dd class="col-sm-8">{{ client.id }}</dd>
+
+                        <dt class="col-sm-4">Наименование:</dt>
+                        <dd class="col-sm-8">{{ client.client_name or '-' }}</dd>
+
+                        <dt class="col-sm-4">УНП:</dt>
+                        <dd class="col-sm-8">{{ client.unp or '-' }}</dd>
+
+                        <dt class="col-sm-4">Тип клиента:</dt>
+                        <dd class="col-sm-8">{{ client.type_client or '-' }}</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Телефон:</dt>
+                        <dd class="col-sm-8">{{ client.egr_phone or '-' }}</dd>
+
+                        <dt class="col-sm-4">Дата регистрации:</dt>
+                        <dd class="col-sm-8">
+                            {% if client.registration_date %}
+                                {{ client.registration_date }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">Адрес:</dt>
+                        <dd class="col-sm-8">{{ client.address or '-' }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Системная информация</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Дата создания:</dt>
+                <dd class="col-sm-3">
+                    {% if client.created_at %}
+                        {{ client.created_at }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </dd>
+
+                <dt class="col-sm-3">Дата обновления:</dt>
+                <dd class="col-sm-3">
+                    {% if client.updated_at %}
+                        {{ client.updated_at }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </dd>
+
+                {% if client.is_deleted %}
+                <dt class="col-sm-3">Дата удаления:</dt>
+                <dd class="col-sm-3">
+                    {% if client.deleted_at %}
+                        {{ client.deleted_at }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </dd>
+                {% endif %}
+            </dl>
+        </div>
+    </div>
+</div>
+{% endblock %}
