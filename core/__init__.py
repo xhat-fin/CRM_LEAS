@@ -38,6 +38,10 @@ def create_app():
 def register_blueprints(app):
     from app.auth.routes import auth_bp
     from app.admin.main import admin_bp
+    from app.manager.main import manager_bp
+    from app.expert.main import expert_bp
 
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(manager_bp, url_prefix='/manager')
+    app.register_blueprint(expert_bp, url_prefix='/expert')

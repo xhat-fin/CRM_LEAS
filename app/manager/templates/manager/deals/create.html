@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends "base_manager.html" %}
+
 
 {% block title %}Создание новой сделки{% endblock %}
 
@@ -25,27 +26,19 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="mb-0">Создание новой сделки</h1>
-    <a href="{{ url_for('admin.get_deals') }}" class="btn btn-outline-secondary">
+    <a href="{{ url_for('manager.get_deals') }}" class="btn btn-outline-secondary">
         <i class="fas fa-arrow-left me-1"></i> Назад к списку
     </a>
 </div>
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="{{ url_for('admin.create_deal', id=clients_id) }}">
+        <form method="POST" action="{{ url_for('manager.create_deal', id=clients_id) }}">
             <!-- Секция 1: Основная информация -->
             <div class="form-section">
                 <h3 class="form-section-title">Основная информация</h3>
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="manager_id" class="form-label required-field">Менеджер</label>
-                        <select class="form-select" id="manager_id" name="manager_id" required>
-                            <option value="">Выберите менеджера</option>
-                            {% for manager in managers %}
-                            <option value="{{ manager.id }}">{{ manager.full_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+
                     <div class="col-md-4">
                         <label for="car_brand" class="form-label">Марка автомобиля</label>
                         <input type="text" class="form-control" id="car_brand" name="car_brand">
@@ -102,7 +95,7 @@
                         <input type="text" class="form-control" id="term" name="term">
                     </div>
                     <div class="col-md-3">
-                        <label for="deal_amount_at_conclusion" class="form-label">Сумма на заключении</label>
+                        <label for="deal_amount_at_conclusion" class="form-label">Первоначальная стоимость</label>
                         <input type="number" step="0.01" class="form-control" id="deal_amount_at_conclusion" name="deal_amount_at_conclusion">
                     </div>
                 </div>
@@ -123,26 +116,6 @@
                     <div class="col-md-4">
                         <label for="application_datetime" class="form-label">Дата заявки</label>
                         <input type="datetime-local" class="form-control" id="application_datetime" name="application_datetime">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="transfer_to_ke_datetime" class="form-label">Передача в КЭ</label>
-                        <input type="datetime-local" class="form-control" id="transfer_to_ke_datetime" name="transfer_to_ke_datetime">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="kk_datetime" class="form-label">Дата КК</label>
-                        <input type="datetime-local" class="form-control" id="kk_datetime" name="kk_datetime">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="protocol_date" class="form-label">Дата протокола</label>
-                        <input type="date" class="form-control" id="protocol_date" name="protocol_date">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="dfl_signing_date" class="form-label">Подписание ДФЛ</label>
-                        <input type="date" class="form-control" id="dfl_signing_date" name="dfl_signing_date">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="car_shipment_date" class="form-label">Дата отгрузки</label>
-                        <input type="date" class="form-control" id="car_shipment_date" name="car_shipment_date">
                     </div>
                 </div>
             </div>
@@ -209,58 +182,19 @@
                                     <label class="form-check-label" for="pv_in_sap">PV в SAP</label>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="expert_id" class="form-label">Эксперт</label>
-                                <select class="form-select" id="expert_id" name="expert_id">
-                                    <option value="">Не назначен</option>
-                                    {% for expert in experts %}
-                                    <option value="{{ expert.id }}">{{ expert.full_name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <label for="decision_making_body" class="form-label mt-2">Орган принятия решения</label>
-                                <select class="form-select" id="decision_making_body" name="decision_making_body">
-                                    <option value="">Не указано</option>
-                                    {% for body in decision_bodies %}
-                                    <option value="{{ body.body_decision }}">{{ body.body_decision }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <label for="agent_name" class="form-label">Агент</label>
                         <input type="text" class="form-control" id="agent_name" name="agent_name">
-                        <label for="creditworthiness" class="form-label mt-2">Кредитоспособность</label>
-                        <select class="form-select" id="creditworthiness" name="creditworthiness">
-                            <option value="">Не указано</option>
-                            {% for level in creditworthiness_levels %}
-                            <option value="{{ level.creditworthiness }}">{{ level.creditworthiness }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="stop_list_duration" class="form-label">Дней в стоп-листе</label>
-                        <input type="number" class="form-control" id="stop_list_duration" name="stop_list_duration">
-                    </div>
-                    <div class="col-md-8">
-                        <label for="delay_comments" class="form-label">Комментарии по задержке</label>
-                        <input type="text" class="form-control" id="delay_comments" name="delay_comments">
                     </div>
                     <div class="col-md-6">
                         <label for="client_refusal_reason" class="form-label">Причина отказа клиента</label>
                         <textarea class="form-control" id="client_refusal_reason" name="client_refusal_reason" rows="2"></textarea>
                     </div>
                     <div class="col-md-6">
-                        <label for="deal_comment" class="form-label">Комментарий к сделке</label>
-                        <textarea class="form-control" id="deal_comment" name="deal_comment" rows="2"></textarea>
-                    </div>
-                    <div class="col-md-6">
                         <label for="description_manager" class="form-label">Описание менеджера</label>
                         <textarea class="form-control" id="description_manager" name="description_manager" rows="2"></textarea>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="description_ke" class="form-label">Описание КЭ</label>
-                        <textarea class="form-control" id="description_ke" name="description_ke" rows="2"></textarea>
                     </div>
                 </div>
             </div>

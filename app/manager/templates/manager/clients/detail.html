@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends "base_manager.html" %}
+
 
 {% block title %}{{ title }}{% endblock %}
 
@@ -7,19 +8,19 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="mb-0">Карточка клиента</h1>
     <div>
-        <a href="{{ url_for('admin.get_clients') }}" class="btn btn-outline-secondary">
+        <a href="{{ url_for('manager.get_clients') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-1"></i> Назад к списку
         </a>
         {% if not client.is_deleted %}
-        <a href="{{ url_for('admin.update_client', id=client.id) }}" class="btn btn-warning">
+        <a href="{{ url_for('manager.update_client', id=client.id) }}" class="btn btn-warning">
             <i class="fas fa-edit me-1"></i> Редактировать
         </a>
-        <form action="{{ url_for('admin.delete_client', id=client.id) }}" method="POST" style="display: inline;">
+        <form action="{{ url_for('manager.delete_client', id=client.id) }}" method="POST" style="display: inline;">
             <button type="submit" class="btn btn-danger">
                 <i class="fas fa-trash me-1"></i> Удалить
             </button>
         </form>
-        <a href="{{ url_for('admin.create_deal', id=client.id) }}" class="btn btn-primary">
+        <a href="{{ url_for('manager.create_deal', id=client.id) }}" class="btn btn-primary">
             <i class="fas fa-plus me-1"></i> Новая сделка
         </a>
         {% endif %}
@@ -142,13 +143,13 @@
                             <td>{{ deal.type_deal or '-' }}</td>
                             <td>{{ deal.created_at }}</td>
                             <td>
-                                <a href="{{ url_for('admin.get_deal', deal_id=deal.id) }}" class="btn btn-sm btn-primary" title="Просмотр">
+                                <a href="{{ url_for('manager.get_deal', deal_id=deal.id) }}" class="btn btn-sm btn-primary" title="Просмотр">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="{{ url_for('admin.update_deal', id=deal.id) }}" class="btn btn-sm btn-warning" title="Редактировать">
+                                <a href="{{ url_for('manager.update_deal', id=deal.id) }}" class="btn btn-sm btn-warning" title="Редактировать">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action=" {{ url_for('admin.delete_deal', id=deal.id) }}" method="POST" class="d-inline">
+                                <form action=" {{ url_for('manager.delete_deal', id=deal.id) }}" method="POST" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-danger" title="Удалить" onclick="return confirm('Вы уверены, что хотите удалить сделку?')">
                                         <i class="fas fa-trash"></i>
                                     </button>

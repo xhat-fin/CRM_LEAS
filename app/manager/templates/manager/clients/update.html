@@ -1,34 +1,49 @@
-{% extends "base.html" %}
+{% extends "base_manager.html" %}
 
-{% block title %}Добавление нового клиента{% endblock %}
+
+{% block title %}Редактирование клиента {{ client.id }} | Лизинг CRM{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">Добавление нового клиента</h1>
-        <a href="{{ url_for('admin.get_clients') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-1"></i> Назад к списку
+        <h1 class="mb-0">Редактирование клиента</h1>
+        <a href="{{ url_for('manager.get_clients_by_id', id=client.id) }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Назад к клиенту
         </a>
     </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="mb-4">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <div class="card">
         <div class="card-header">
             <h5 class="mb-0">Основная информация</h5>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ url_for('admin.create_client') }}">
+            <form method="POST" action="{{ url_for('manager.update_client', id=client.id) }}">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="client_name" class="form-label">Наименование клиента</label>
-                            <input type="text" class="form-control" id="client_name" name="client_name">
+                            <input type="text" class="form-control" id="client_name" name="client_name"
+                                   value="{{ client.client_name or '' }}">
                         </div>
                     </div>
                     
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="unp" class="form-label">УНП <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="unp" name="unp" required>
+                            <input type="text" class="form-control" id="unp" name="unp" required
+                                   value="{{ client.unp or '' }}">
                             <small class="form-text text-muted">Обязательное поле</small>
                         </div>
                     </div>
@@ -39,7 +54,7 @@
                             <select class="form-select" id="type_client" name="type_client">
                                 <option value="">Не указано</option>
                                 {% for type in client_types %}
-                                    <option value="{{ type.type_clients }}" {% if type.type_clients == type.type_clients %}selected{% endif %}>
+                                    <option value="{{ type.type_deal }}" {% if client.type_client == type.type_deal %}selected{% endif %}>
                                         {{ type.type_clients }}
                                     </option>
                                 {% endfor %}
@@ -50,31 +65,34 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="egr_phone" class="form-label">Телефон</label>
-                            <input type="tel" class="form-control" id="egr_phone" name="egr_phone">
+                            <input type="tel" class="form-control" id="egr_phone" name="egr_phone"
+                                   value="{{ client.egr_phone or '' }}">
                         </div>
                     </div>
                     
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="registration_date" class="form-label">Дата регистрации</label>
-                            <input type="date" class="form-control" id="registration_date" name="registration_date">
+                            <input type="date" class="form-control" id="registration_date" name="registration_date"
+                                   value="{{ client.registration_date.strftime('%Y-%m-%d') if client.registration_date else '' }}">
                         </div>
                     </div>
                     
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="address" class="form-label">Адрес</label>
-                            <input type="text" class="form-control" id="address" name="address">
+                            <input type="text" class="form-control" id="address" name="address"
+                                   value="{{ client.address or '' }}">
                         </div>
                     </div>
                     
                     <div class="col-12 mt-4">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i> Сохранить
+                            <i class="fas fa-save me-1"></i> Сохранить изменения
                         </button>
-                        <button type="reset" class="btn btn-outline-secondary ms-2">
-                            <i class="fas fa-undo me-1"></i> Очистить
-                        </button>
+                        <a href="{{ url_for('manager.get_clients_by_id', id=client.id) }}" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-times me-1"></i> Отмена
+                        </a>
                     </div>
                 </div>
             </form>

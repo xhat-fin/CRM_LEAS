@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_manager.html" %}
 
 {% block title %}Редактирование сделки {{ deal.id }} | Лизинг CRM{% endblock %}
 
@@ -8,12 +8,12 @@
         <h5 class="mb-0 text-primary">
             <i class="fas fa-edit me-2"></i>Редактирование сделки #{{ deal.id }}
         </h5>
-        <a href="{{ url_for('admin.get_deals') }}" class="btn btn-sm btn-outline-secondary">
+        <a href="{{ url_for('manager.get_deals') }}" class="btn btn-sm btn-outline-secondary">
             <i class="fas fa-arrow-left me-1"></i> Назад к списку
         </a>
     </div>
     <div class="card-body">
-        <form method="POST" action="{{ url_for('admin.update_deal', id=deal.id) }}" class="needs-validation" novalidate>
+        <form method="POST" action="{{ url_for('manager.update_deal', id=deal.id) }}" class="needs-validation" novalidate>
             <div class="row g-4">
                 <!-- Основная информация -->
                 <div class="col-md-6">
@@ -24,22 +24,10 @@
                             </h6>
                         </div>
                         <div class="card-body">
-                            <div class="mb-3">
-                                <label for="manager_id" class="form-label">Менеджер <span class="text-danger">*</span></label>
-                                <select class="form-select" id="manager_id" name="manager_id" required>
-                                    <option value="">Выберите менеджера</option>
-                                    {% for manager in managers %}
-                                        <option value="{{ manager.id }}" {% if deal.manager_id == manager.id %}selected{% endif %}>
-                                            {{ manager.full_name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                                <div class="invalid-feedback">Пожалуйста, выберите менеджера</div>
-                            </div>
 
                             <div class="mb-3">
-                                <label for="application_status" class="form-label">Статус заявки</label>
-                                <select class="form-select" id="application_status" name="application_status">
+                                <label for="status_deal" class="form-label">Статус заявки</label>
+                                <select class="form-select" id="status_deal" name="status_deal">
                                     {% for status in statuses %}
                                         <option value="{{ status.status_deal }}" {% if deal.status_deal == status.status_deal %}selected{% endif %}>
                                             {{ status.status_deal }}
@@ -226,38 +214,9 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="expert_id" class="form-label">Эксперт КЭ</label>
-                                <select class="form-select" id="expert_id" name="expert_id">
-                                    <option value="">Не назначен</option>
-                                    {% for expert in experts %}
-                                        <option value="{{ expert.id }}" {% if deal.expert_id == expert.id %}selected{% endif %}>
-                                            {{ expert.full_name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="creditworthiness" class="form-label">Кредитоспособность</label>
-                                <select class="form-select" id="creditworthiness" name="creditworthiness">
-                                    {% for level in creditworthiness_levels %}
-                                        <option value="{{ level.creditworthiness }}" {% if deal.creditworthiness == level.creditworthiness %}selected{% endif %}>
-                                            {{ level.creditworthiness }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
                                 <label for="client_refusal_reason" class="form-label">Причина отказа клиента</label>
                                 <input type="text" class="form-control" id="client_refusal_reason" name="client_refusal_reason"
                                        value="{{ deal.client_refusal_reason or '' }}">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="stop_list_duration" class="form-label">Длительность стоп-листа</label>
-                                <input type="text" class="form-control" id="stop_list_duration" name="stop_list_duration"
-                                       value="{{ deal.stop_list_duration or '' }}">
                             </div>
                         </div>
                     </div>
@@ -285,8 +244,8 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="originals_or_scans" class="form-label">Тип документов</label>
-                                <select class="form-select" id="originals_or_scans" name="originals_or_scans">
+                                <label for="type_document" class="form-label">Тип документов</label>
+                                <select class="form-select" id="type_document" name="type_document">
                                     {% for type in originals_types %}
                                         <option value="{{ type.type_document }}" {% if deal.type_document == type.type_document %}selected{% endif %}>
                                             {{ type.type_document }}
@@ -319,58 +278,7 @@
                     </div>
                 </div>
 
-                <!-- Процесс согласования -->
-                <div class="col-md-6">
-                    <div class="card h-100 border-light">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0">
-                                <i class="fas fa-tasks me-2"></i>Процесс согласования
-                            </h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="decision_making_body" class="form-label">Орган принятия решения</label>
-                                <select class="form-select" id="decision_making_body" name="decision_making_body">
-                                    {% for body in decision_bodies %}
-                                        <option value="{{ body.body_decision }}" {% if deal.body_decision == body.body_decision %}selected{% endif %}>
-                                            {{ body.body_decision }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="application_datetime" class="form-label">Дата подачи заявки</label>
-                                <input type="datetime-local" class="form-control" id="application_datetime" name="application_datetime"
-                                       value="{{ deal.application_datetime.strftime('%Y-%m-%dT%H:%M') if deal.application_datetime else '' }}">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="transfer_to_ke_datetime" class="form-label">Дата передачи в КЭ</label>
-                                <input type="datetime-local" class="form-control" id="transfer_to_ke_datetime" name="transfer_to_ke_datetime"
-                                       value="{{ deal.transfer_to_ke_datetime.strftime('%Y-%m-%dT%H:%M') if deal.transfer_to_ke_datetime else '' }}">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="kk_datetime" class="form-label">Дата КК</label>
-                                <input type="datetime-local" class="form-control" id="kk_datetime" name="kk_datetime"
-                                       value="{{ deal.kk_datetime.strftime('%Y-%m-%dT%H:%M') if deal.kk_datetime else '' }}">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="protocol_date" class="form-label">Дата протокола</label>
-                                <input type="date" class="form-control" id="protocol_date" name="protocol_date"
-                                       value="{{ deal.protocol_date.strftime('%Y-%m-%d') if deal.protocol_date else '' }}">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="dfl_signing_date" class="form-label">Дата подписания ДФЛ</label>
-                                <input type="date" class="form-control" id="dfl_signing_date" name="dfl_signing_date"
-                                       value="{{ deal.dfl_signing_date.strftime('%Y-%m-%d') if deal.dfl_signing_date else '' }}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Комментарии и примечания -->
                 <div class="col-12">
@@ -399,12 +307,6 @@
                                           placeholder="Примечания менеджера...">{{ deal.description_manager or '' }}</textarea>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="description_ke" class="form-label">Примечание КЭ</label>
-                                <textarea class="form-control" id="description_ke" name="description_ke" rows="2"
-                                          placeholder="Примечания эксперта...">{{ deal.description_ke or '' }}</textarea>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

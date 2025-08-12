@@ -15,7 +15,7 @@
                 <i class="fas fa-file-signature module-icon"></i>
             </div>
             <h5 class="mb-3">Конфигурация системы</h5>
-            <a href="{{ url_for('admin.get_users') }}" class="btn btn-primary">
+            <a href="{{ url_for('admin.get_config') }}" class="btn btn-primary">
                 <i class="fas fa-arrow-right me-1"></i> Перейти
             </a>
         </div>
@@ -58,5 +58,31 @@
             </a>
         </div>
     </div>
+        <!-- Модуль распределения сделок КЭ -->
+    <div class="col-md-6 col-lg-3">
+        <div class="module-card">
+            <div class="mb-3">
+                <i class="fas fa-file-contract module-icon"></i>
+            </div>
+            <h5 class="mb-3">Распределение сделок КЭ</h5>
+            <a href="{{ url_for('admin.deal_assign') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-right me-1"></i> Перейти
+            </a>
+        </div>
+    </div>
+
+            <!-- Модуль удаленных записей -->
+    <div class="col-md-6 col-lg-3">
+        <div class="module-card">
+            <div class="mb-3">
+                <i class="fas fa-file-contract module-icon"></i>
+            </div>
+            <h5 class="mb-3">Удаленное</h5>
+            <a href="{{ url_for('admin.get_deleted_clients') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-right me-1"></i> Перейти
+            </a>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

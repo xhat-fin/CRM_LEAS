@@ -71,7 +71,13 @@ def login():
             session['username'] = user.username
             session['role'] = user.role.name
             flash('Вы успешно вошли в систему!', 'success')
-            return redirect(url_for('admin.index'))
+            if user.role.name == 'admin':
+                return redirect(url_for('admin.index'))
+            elif user.role.name == 'manager':
+                return redirect(url_for('manager.index'))
+            elif user.role.name == 'expert':
+                return redirect(url_for('expert.index'))
+
         else:
             flash('Неверное имя пользователя или пароль', 'error')
             return redirect(url_for('auth.login'))

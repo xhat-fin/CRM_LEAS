@@ -1,0 +1,426 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2>Конфигурация системы</h2>
+    <hr>
+
+    <!-- Валюты -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Валюты</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_currency') }}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="currency_name" placeholder="Новая валюта" required>
+                    <button class="btn btn-outline-primary" type="submit">Добавить</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="70%">Название</th>
+                            <th width="20%">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for curr in currency %}
+                        <tr>
+                            <td>{{ curr.id }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.update_currency') }}" class="d-flex">
+                                    <input type="hidden" name="id" value="{{ curr.id }}">
+                                    <input type="text" class="form-control form-control-sm" name="currency_name" value="{{ curr.currency_name }}" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-success ms-2">Обновить</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_currency', currency_id=curr.id) }}" onsubmit="return confirm('Удалить эту валюту?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Типы клиентов -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Типы клиентов</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_type_client') }}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="type_clients" placeholder="Новый тип клиента" required>
+                    <button class="btn btn-outline-primary" type="submit">Добавить</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="70%">Тип клиента</th>
+                            <th width="20%">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for client in type_clients %}
+                        <tr>
+                            <td>{{ client.id }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.update_type_client') }}" class="d-flex">
+                                    <input type="hidden" name="id" value="{{ client.id }}">
+                                    <input type="text" class="form-control form-control-sm" name="type_clients" value="{{ client.type_clients }}" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-success ms-2">Обновить</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_type_client', client_id=client.id) }}" onsubmit="return confirm('Удалить этот тип клиента?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статусы сделок -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Статусы сделок</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_status_deal') }}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="status_deal" placeholder="Новый статус сделки" required>
+                    <button class="btn btn-outline-primary" type="submit">Добавить</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="70%">Статус сделки</th>
+                            <th width="20%">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for status in status_deals %}
+                        <tr>
+                            <td>{{ status.id }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.update_status_deal') }}" class="d-flex">
+                                    <input type="hidden" name="id" value="{{ status.id }}">
+                                    <input type="text" class="form-control form-control-sm" name="status_deal" value="{{ status.status_deal }}" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-success ms-2">Обновить</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_status_deal', status_id=status.id) }}" onsubmit="return confirm('Удалить этот статус сделки?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кредитоспособность -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Кредитоспособность</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_creditworthiness') }}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="creditworthiness" placeholder="Новый тип кредитоспособности" required>
+                    <button class="btn btn-outline-primary" type="submit">Добавить</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="70%">Тип кредитоспособности</th>
+                            <th width="20%">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for credit in creditworthiness %}
+                        <tr>
+                            <td>{{ credit.id }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.update_creditworthiness') }}" class="d-flex">
+                                    <input type="hidden" name="id" value="{{ credit.id }}">
+                                    <input type="text" class="form-control form-control-sm" name="creditworthiness" value="{{ credit.creditworthiness }}" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-success ms-2">Обновить</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_creditworthiness', record_id=credit.id) }}" onsubmit="return confirm('Удалить эту запись?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Типы документов -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Типы документов</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_type_document') }}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="type_document" placeholder="Новый тип документа" required>
+                    <button class="btn btn-outline-primary" type="submit">Добавить</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="70%">Тип документа</th>
+                            <th width="20%">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in type_documents %}
+                        <tr>
+                            <td>{{ doc.id }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.update_type_document') }}" class="d-flex">
+                                    <input type="hidden" name="id" value="{{ doc.id }}">
+                                    <input type="text" class="form-control form-control-sm" name="type_document" value="{{ doc.type_document }}" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-success ms-2">Обновить</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_type_document', doc_id=doc.id) }}" onsubmit="return confirm('Удалить этот тип документа?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Органы решений -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Органы решений</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_body_decision') }}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="body_decision" placeholder="Новый орган решения" required>
+                    <button class="btn btn-outline-primary" type="submit">Добавить</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="70%">Орган решения</th>
+                            <th width="20%">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for body in body_decisions %}
+                        <tr>
+                            <td>{{ body.id }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.update_body_decision') }}" class="d-flex">
+                                    <input type="hidden" name="id" value="{{ body.id }}">
+                                    <input type="text" class="form-control form-control-sm" name="body_decision" value="{{ body.body_decision }}" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-success ms-2">Обновить</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_body_decision', body_id=body.id) }}" onsubmit="return confirm('Удалить этот орган решения?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Типы сделок -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Типы сделок</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_type_deal') }}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="type_deal" placeholder="Новый тип сделки" required>
+                    <button class="btn btn-outline-primary" type="submit">Добавить</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="70%">Тип сделки</th>
+                            <th width="20%">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for deal in type_deals %}
+                        <tr>
+                            <td>{{ deal.id }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.update_type_deal') }}" class="d-flex">
+                                    <input type="hidden" name="id" value="{{ deal.id }}">
+                                    <input type="text" class="form-control form-control-sm" name="type_deal" value="{{ deal.type_deal }}" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-success ms-2">Обновить</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_type_deal', deal_id=deal.id) }}" onsubmit="return confirm('Удалить этот тип сделки?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Стадии сделок -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Стадии сделок</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_stage_deal') }}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="stage_deal" placeholder="Новая стадия сделки" required>
+                    <button class="btn btn-outline-primary" type="submit">Добавить</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="70%">Стадия сделки</th>
+                            <th width="20%">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stage in stage_deals %}
+                        <tr>
+                            <td>{{ stage.id }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.update_stage_deal') }}" class="d-flex">
+                                    <input type="hidden" name="id" value="{{ stage.id }}">
+                                    <input type="text" class="form-control form-control-sm" name="stage_deal" value="{{ stage.stage_deal }}" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-success ms-2">Обновить</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_stage_deal', stage_id=stage.id) }}" onsubmit="return confirm('Удалить эту стадию сделки?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Команды -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Команды</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.add_team') }}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="name" placeholder="Новая команда" required>
+                    <button class="btn btn-outline-primary" type="submit">Добавить</button>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="60%">Название команды</th>
+                            <th width="10%">Пользователи</th>
+                            <th width="20%">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for team in teams %}
+                        <tr>
+                            <td>{{ team.id }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.update_team') }}" class="d-flex">
+                                    <input type="hidden" name="id" value="{{ team.id }}">
+                                    <input type="text" class="form-control form-control-sm" name="name" value="{{ team.name }}" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-success ms-2">Обновить</button>
+                                </form>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-secondary">{{ team.users_count }}</span>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.delete_team', team_id=team.id) }}" onsubmit="return confirm('Удалить эту команду?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

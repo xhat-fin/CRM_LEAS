@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_manager.html" %}
 
 {% block title %}Список сделок{% endblock %}
 
@@ -13,7 +13,7 @@
         <i class="fas fa-filter me-1"></i> Фильтры
     </div>
     <div class="card-body">
-        <form method="GET" action="{{ url_for('admin.get_deals') }}" id="filter-form">
+        <form method="GET" action="{{ url_for('manager.get_deals') }}" id="filter-form">
             <div class="row g-3">
                 <!-- Первая строка фильтров -->
                 <div class="col-md-3">
@@ -109,12 +109,12 @@
                             {% elif key == 'end_date' %}
                                 Дата до: {{ value }}
                             {% endif %}
-                            <a href="{{ url_for('admin.get_deals', **{key: ''}) }}" class="ms-1 text-danger"><i class="fas fa-times"></i></a>
+                            <a href="{{ url_for('manager.get_deals', **{key: ''}) }}" class="ms-1 text-danger"><i class="fas fa-times"></i></a>
                         </span>
                     {% endif %}
                 {% endfor %}
             </div>
-            <a href="{{ url_for('admin.get_deals') }}" class="btn btn-sm btn-outline-danger">
+            <a href="{{ url_for('manager.get_deals') }}" class="btn btn-sm btn-outline-danger">
                 <i class="fas fa-times me-1"></i> Сбросить
             </a>
         </div>
@@ -137,7 +137,7 @@
             <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
             <h5 class="mb-2">Сделки не найдены</h5>
             <p class="text-muted">Попробуйте изменить параметры фильтрации</p>
-            <a href="{{ url_for('admin.get_deals') }}" class="btn btn-outline-primary mt-2">
+            <a href="{{ url_for('manager.get_deals') }}" class="btn btn-outline-primary mt-2">
                 Сбросить фильтры
             </a>
         </div>
@@ -181,13 +181,13 @@
                         </td>
                         <td>{{ deal.created_at|datetimeformat }}</td>
                         <td>
-                            <a href="{{ url_for('admin.get_deal', deal_id=deal.id) }}" class="btn btn-sm btn-primary" title="Просмотр">
+                            <a href="{{ url_for('manager.get_deal', deal_id=deal.id) }}" class="btn btn-sm btn-primary" title="Просмотр">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="{{ url_for('admin.update_deal', id=deal.id) }}" class="btn btn-sm btn-warning" title="Редактировать">
+                            <a href="{{ url_for('manager.update_deal', id=deal.id) }}" class="btn btn-sm btn-warning" title="Редактировать">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action=" {{ url_for('admin.delete_deal', id=deal.id) }}" method="POST" class="d-inline">
+                            <form action=" {{ url_for('manager.delete_deal', id=deal.id) }}" method="POST" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-danger" title="Удалить" onclick="return confirm('Вы уверены, что хотите удалить сделку?')">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -207,7 +207,7 @@
                 <li class="page-item {% if meta.page == 1 %}disabled{% endif %}">
                     {% set prev_args = current_filters.copy() %}
                     {% set _ = prev_args.update({'page': meta.page-1}) %}
-                    <a class="page-link" href="{{ url_for('admin.get_deals', **prev_args) }}">
+                    <a class="page-link" href="{{ url_for('manager.get_deals', **prev_args) }}">
                         &laquo; Назад
                     </a>
                 </li>
@@ -216,7 +216,7 @@
                     <li class="page-item {% if meta.page == p %}active{% endif %}">
                         {% set page_args = current_filters.copy() %}
                         {% set _ = page_args.update({'page': p}) %}
-                        <a class="page-link" href="{{ url_for('admin.get_deals', **page_args) }}">
+                        <a class="page-link" href="{{ url_for('manager.get_deals', **page_args) }}">
                             {{ p }}
                         </a>
                     </li>
@@ -225,7 +225,7 @@
                 <li class="page-item {% if not meta.has_next %}disabled{% endif %}">
                     {% set next_args = current_filters.copy() %}
                     {% set _ = next_args.update({'page': meta.page+1}) %}
-                    <a class="page-link" href="{{ url_for('admin.get_deals', **next_args) }}">
+                    <a class="page-link" href="{{ url_for('manager.get_deals', **next_args) }}">
                         Вперед &raquo;
                     </a>
                 </li>
@@ -259,7 +259,7 @@ function buildFilterUrl(params = {}) {
         if (value !== undefined) searchParams.set(key, value);
     }
 
-    return '{{ url_for("admin.get_deals") }}?' + searchParams.toString();
+    return '{{ url_for("manager.get_deals") }}?' + searchParams.toString();
 }
 
     // Обработка отправки формы

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Распределение сделок по дням</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { display: flex; gap: 20px; }
+        .deals-list { width: 40%; border: 1px solid #ddd; padding: 10px; }
+        .assign-section { width: 60%; }
+        .date-selector { margin-bottom: 15px; }
+        .employee-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .employee-card { border: 1px solid #ccc; padding: 10px; }
+        .employee-card.overloaded { background-color: #ffdddd; }
+        .deal-item { padding: 8px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .deal-item:hover { background-color: #f5f5f5; }
+        .day-load { display: flex; gap: 5px; margin-top: 10px; }
+        .day { flex: 1; text-align: center; padding: 3px; border-radius: 3px; }
+        .day.free { background: #e8f5e9; }
+        .day.busy { background: #ffecb3; }
+        .day.overloaded { background: #ffcdd2; }
+        .selected { background-color: #e3f2fd !important; }
+    </style>
+</head>
+<body>
+    <h1>Распределение одобренных сделок</h1>
+
+    <div class="container">
+        <!-- Список сделок -->
+        <div class="deals-list">
+            <h2>Сделки для распределения (5)</h2>
+            <div class="deal-item" data-deal-id="101">
+                <strong>#101</strong> - ООО "ТрансЛогист" (Грузовик Volvo)
+            </div>
+            <div class="deal-item" data-deal-id="102">
+                <strong>#102</strong> - ИП Иванов (Электрокар Tesla)
+            </div>
+        </div>
+
+        <!-- Секция распределения -->
+        <div class="assign-section">
+            <div class="date-selector">
+                <h3>Дата распределения:
+                    <input type="date" id="assignment-date" value="2023-11-15">
+                    <button id="today-btn">Сегодня</button>
+                </h3>
+            </div>
+
+            <h2>Доступные оформители</h2>
+            <div class="employee-cards">
+                <!-- Карточка оформителя 1 -->
+                <div class="employee-card" data-emp-id="1">
+                    <h3>Петрова А.И. <small>(Экспресс-сделки)</small></h3>
+                    <div class="day-load">
+                        <div class="day free" title="15 ноября: 0/4">15</div>
+                        <div class="day busy" title="16 ноября: 2/4">16</div>
+                        <div class="day overloaded" title="17 ноября: 4/4">17</div>
+                    </div>
+                    <button class="assign-btn">Назначить на 15.11</button>
+                </div>
+
+                <!-- Карточка оформителя 2 -->
+                <div class="employee-card" data-emp-id="2">
+                    <h3>Сидоров В.П.</h3>
+                    <div class="day-load">
+                        <div class="day free" title="15 ноября: 1/4">15</div>
+                        <div class="day free" title="16 ноября: 1/4">16</div>
+                        <div class="day busy" title="17 ноября: 3/4">17</div>
+                    </div>
+                    <button class="assign-btn">Назначить на 15.11</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h3>Легенда:</h3>
+                <div><span class="day free" style="display: inline-block; width: 20px;"></span> - Свободен (0-2 сделки)</div>
+                <div><span class="day busy" style="display: inline-block; width: 20px;"></span> - Частично занят (3 сделки)</div>
+                <div><span class="day overloaded" style="display: inline-block; width: 20px;"></span> - Перегружен (4+ сделки)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Логика выбора даты и сделки
+        const dateInput = document.getElementById('assignment-date');
+        let selectedDeal = null;
+
+        document.querySelectorAll('.deal-item').forEach(item => {
+            item.addEventListener('click', function() {
+                selectedDeal = this.getAttribute('data-deal-id');
+                document.querySelectorAll('.deal-item').forEach(i =>
+                    i.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // Обновление кнопок при смене даты
+        dateInput.addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const day = selectedDate.getDate();
+            const month = selectedDate.getMonth() + 1;
+            const formattedDate = `${day}.${month}`;
+
+            document.querySelectorAll('.assign-btn').forEach(btn => {
+                btn.textContent = `Назначить на ${formattedDate}`;
+            });
+        });
+
+        // Назначение сделки
+        document.querySelectorAll('.assign-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!selectedDeal) {
+                    alert('Выберите сделку из списка');
+                    return;
+                }
+
+                const empCard = this.closest('.employee-card');
+                const empName = empCard.querySelector('h3').textContent;
+                const date = dateInput.value;
+
+                if (confirm(`Назначить сделку #${selectedDeal} на ${empName} (${date})?`)) {
+                    // AJAX-запрос к API
+                    console.log(`Назначение: deal=${selectedDeal}, emp=${empCard.dataset.empId}, date=${date}`);
+
+                    // Визуальное обновление
+                    const dayElement = empCard.querySelector(`.day[title*="${dateInput.value.split('-')[2]}"]`);
+                    if (dayElement) {
+                        dayElement.classList.remove('free');
+                        dayElement.classList.add('busy');
+                    }
+                }
+            });
+        });
+
+        // Кнопка "Сегодня"
+        document.getElementById('today-btn').addEventListener('click', function() {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+            dateInput.dispatchEvent(new Event('change'));
+        });
+    </script>
+</body>
+</html>
