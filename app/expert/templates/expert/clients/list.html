@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "base_expert.html" %}
 
 {% block title %}Список клиентов{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="mb-0">Список клиентов</h1>
-    <a href="{{ url_for('admin.create_client') }}" class="btn btn-primary">
+    <a href="{{ url_for('expert.create_client') }}" class="btn btn-primary">
         <i class="fas fa-plus me-1"></i> Добавить клиента
     </a>
 </div>
@@ -16,7 +16,7 @@
         <i class="fas fa-filter me-1"></i> Фильтры
     </div>
     <div class="card-body">
-        <form method="GET" action="{{ url_for('admin.get_clients') }}">
+        <form method="GET" action="{{ url_for('expert.get_clients') }}">
             <div class="row g-3">
                 <div class="col-md-4">
                     <label for="client_name" class="form-label">Наименование клиента</label>
@@ -78,11 +78,11 @@
                             <td>{{ client.type_client or '-' }}</td>
                             <td>{{ client.registration_date[:10] if client.registration_date else '-' }}</td>
                             <td>
-                                <a href="{{ url_for('admin.get_clients_by_id', id=client.id) }}" class="btn btn-sm btn-primary" title="Просмотр">
+                                <a href="{{ url_for('expert.get_clients_by_id', id=client.id) }}" class="btn btn-sm btn-primary" title="Просмотр">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 {% if not client.is_deleted %}
-                                <a href="{{ url_for('admin.update_client', id=client.id) }}" class="btn btn-sm btn-warning" title="Редактировать">
+                                <a href="{{ url_for('expert.update_client', id=client.id) }}" class="btn btn-sm btn-warning" title="Редактировать">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 {% endif %}
@@ -104,7 +104,7 @@
             <ul class="pagination justify-content-center mt-4">
                 <li class="page-item {% if meta.page == 1 %}disabled{% endif %}">
                     <a class="page-link"
-                       href="{{ url_for('admin.get_clients',
+                       href="{{ url_for('expert.get_clients',
                            page=meta.page-1,
                            client_name=filters.client_name,
                            unp=filters.unp,
@@ -117,7 +117,7 @@
                     {% if p >= meta.page-2 and p <= meta.page+2 %}
                     <li class="page-item {% if meta.page == p %}active{% endif %}">
                         <a class="page-link"
-                           href="{{ url_for('admin.get_clients',
+                           href="{{ url_for('expert.get_clients',
                                page=p,
                                client_name=filters.client_name,
                                unp=filters.unp,
@@ -130,7 +130,7 @@
 
                 <li class="page-item {% if not meta.has_next %}disabled{% endif %}">
                     <a class="page-link"
-                       href="{{ url_for('admin.get_clients',
+                       href="{{ url_for('expert.get_clients',
                            page=meta.page+1,
                            client_name=filters.client_name,
                            unp=filters.unp,

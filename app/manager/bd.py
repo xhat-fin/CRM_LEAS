@@ -1,16 +1,12 @@
 from datetime import datetime, date, timedelta
-from decimal import Decimal
 from sqlalchemy import (
-    create_engine, String, ForeignKey, Date, Numeric,
-    Boolean, Text, Interval
+    create_engine
 )
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker, joinedload, selectinload
-from sqlalchemy.types import TIMESTAMP
+from sqlalchemy.orm import DeclarativeBase, mapped_column, sessionmaker, joinedload
 
-from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 from app.admin.bd import Client, Deal
 
 load_dotenv()

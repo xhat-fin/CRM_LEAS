@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_expert.html" %}
 
 {% block title %}Редактирование клиента {{ client.id }} | Лизинг CRM{% endblock %}
 
@@ -6,7 +6,7 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Редактирование клиента</h1>
-        <a href="{{ url_for('admin.get_clients_by_id', id=client.id) }}" class="btn btn-outline-secondary">
+        <a href="{{ url_for('expert.get_clients_by_id', id=client.id) }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-1"></i> Назад к клиенту
         </a>
     </div>
@@ -28,7 +28,7 @@
             <h5 class="mb-0">Основная информация</h5>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ url_for('admin.update_client', id=client.id) }}">
+            <form method="POST" action="{{ url_for('expert.update_client', id=client.id) }}">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -89,7 +89,7 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save me-1"></i> Сохранить изменения
                         </button>
-                        <a href="{{ url_for('admin.get_clients_by_id', id=client.id) }}" class="btn btn-outline-secondary ms-2">
+                        <a href="{{ url_for('expert.get_clients_by_id', id=client.id) }}" class="btn btn-outline-secondary ms-2">
                             <i class="fas fa-times me-1"></i> Отмена
                         </a>
                     </div>

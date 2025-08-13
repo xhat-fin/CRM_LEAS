@@ -250,7 +250,7 @@
     <!-- Навигация -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('admin.index') }}">
+            <a class="navbar-brand" href="{{ url_for('expert.index') }}">
                 <i class="fas fa-building"></i>Лизинг CRM
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -259,17 +259,17 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == url_for('admin.index') %}active{% endif %}" href="{{ url_for('admin.index') }}">
+                        <a class="nav-link {% if request.path == url_for('expert.index') %}active{% endif %}" href="{{ url_for('expert.index') }}">
                             <i class="fas fa-home me-1"></i> Главная
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == url_for('admin.get_deals') %}active{% endif %}" href="{{ url_for('admin.get_deals') }}">
+                        <a class="nav-link {% if request.path == url_for('expert.get_deals') %}active{% endif %}" href="{{ url_for('expert.get_deals') }}">
                             <i class="fas fa-file-contract me-1"></i> Сделки
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == url_for('admin.get_clients') %}active{% endif %}" href="{{ url_for('admin.get_clients') }}">
+                        <a class="nav-link {% if request.path == url_for('expert.get_clients') %}active{% endif %}" href="{{ url_for('expert.get_clients') }}">
                             <i class="fas fa-users me-1"></i> Клиенты
                         </a>
                     </li>

@@ -11,7 +11,7 @@ from app.admin.bd import (read_status_deals, read_type_deals, read_currency,
                           read_type_clients)
 
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from decimal import Decimal, InvalidOperation
 
 manager_bp = Blueprint('manager', __name__, template_folder='templates')

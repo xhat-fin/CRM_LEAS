@@ -7,7 +7,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker, joinedload, selectinload
 from sqlalchemy.types import TIMESTAMP
 
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
 
 from typing import Optional, Dict, Any, List

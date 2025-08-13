@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_expert.html" %}
 
 {% block title %}Редактирование сделки {{ deal.id }} | Лизинг CRM{% endblock %}
 
@@ -8,12 +8,12 @@
         <h5 class="mb-0 text-primary">
             <i class="fas fa-edit me-2"></i>Редактирование сделки #{{ deal.id }}
         </h5>
-        <a href="{{ url_for('admin.get_deals') }}" class="btn btn-sm btn-outline-secondary">
+        <a href="{{ url_for('expert.get_deals') }}" class="btn btn-sm btn-outline-secondary">
             <i class="fas fa-arrow-left me-1"></i> Назад к списку
         </a>
     </div>
     <div class="card-body">
-        <form method="POST" action="{{ url_for('admin.update_deal', id=deal.id) }}" class="needs-validation" novalidate>
+        <form method="POST" action="{{ url_for('expert.update_deal', id=deal.id) }}" class="needs-validation" novalidate>
             <div class="row g-4">
                 <!-- Основная информация -->
                 <div class="col-md-6">
@@ -24,18 +24,7 @@
                             </h6>
                         </div>
                         <div class="card-body">
-                            <div class="mb-3">
-                                <label for="manager_id" class="form-label">Менеджер <span class="text-danger">*</span></label>
-                                <select class="form-select" id="manager_id" name="manager_id" required>
-                                    <option value="">Выберите менеджера</option>
-                                    {% for manager in managers %}
-                                        <option value="{{ manager.id }}" {% if deal.manager_id == manager.id %}selected{% endif %}>
-                                            {{ manager.full_name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                                <div class="invalid-feedback">Пожалуйста, выберите менеджера</div>
-                            </div>
+
 
                             <div class="mb-3">
                                 <label for="application_status" class="form-label">Статус заявки</label>
@@ -225,17 +214,6 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="expert_id" class="form-label">Эксперт КЭ</label>
-                                <select class="form-select" id="expert_id" name="expert_id">
-                                    <option value="">Не назначен</option>
-                                    {% for expert in experts %}
-                                        <option value="{{ expert.id }}" {% if deal.expert_id == expert.id %}selected{% endif %}>
-                                            {{ expert.full_name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
 
                             <div class="mb-3">
                                 <label for="creditworthiness" class="form-label">Кредитоспособность</label>
