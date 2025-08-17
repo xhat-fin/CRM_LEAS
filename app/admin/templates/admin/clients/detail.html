@@ -83,7 +83,7 @@
                 <dt class="col-sm-3">Дата создания:</dt>
                 <dd class="col-sm-3">
                     {% if client.created_at %}
-                        {{ client.created_at }}
+                        {{ client.created_at|datetimeformat or 'Не указана' }}
                     {% else %}
                         -
                     {% endif %}
@@ -92,7 +92,7 @@
                 <dt class="col-sm-3">Дата обновления:</dt>
                 <dd class="col-sm-3">
                     {% if client.updated_at %}
-                        {{ client.updated_at }}
+                        {{ client.updated_at|datetimeformat or 'Не указана' }}
                     {% else %}
                         -
                     {% endif %}

@@ -100,7 +100,7 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(150), nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
 
-    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
+    role_id: Mapped[Optional[int]] = mapped_column(ForeignKey("roles.id"))
     team_id: Mapped[Optional[int]] = mapped_column(ForeignKey("teams.id"))
     role: Mapped["Role"] = relationship(back_populates="users")
     team: Mapped[Optional["Team"]] = relationship(back_populates="users")
@@ -124,12 +124,12 @@ class User(Base):
     # Технические поля
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
-        default=datetime.utcnow
+        default=datetime.now
     )
     updated_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
+        default=datetime.now,
+        onupdate=datetime.now
     )
     deleted_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
@@ -156,12 +156,12 @@ class Client(Base):
     # Технические поля
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
-        default=datetime.utcnow
+        default=datetime.now
     )
     updated_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
+        default=datetime.now,
+        onupdate=datetime.now
     )
     deleted_at: Mapped[Optional[datetime]] = mapped_column(
         TIMESTAMP(timezone=True)
@@ -224,12 +224,12 @@ class Deal(Base):
     # Технические поля
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
-        default=datetime.utcnow
+        default=datetime.now
     )
     updated_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
+        default=datetime.now,
+        onupdate=datetime.now
     )
     deleted_at: Mapped[Optional[datetime]] = mapped_column(
         TIMESTAMP(timezone=True)
@@ -530,7 +530,7 @@ def soft_delete_role(role_id: int):
                 print(f'Роль с ID {role_id} не найдена')
                 return False
 
-            role.deleted_at = datetime.utcnow()
+            role.deleted_at = datetime.now()
             session.commit()
             return True
 
@@ -551,7 +551,7 @@ def soft_delete_user(user_id: int):
                 print(f'Пользователь с ID {user_id} не найден')
                 return False
 
-            user.deleted_at = datetime.utcnow()
+            user.deleted_at = datetime.now()
             session.commit()
             return True
 
@@ -572,7 +572,7 @@ def soft_delete_client(client_id: int):
                 print(f'Клиент с ID {client_id} не найден')
                 return False
 
-            client.deleted_at = datetime.utcnow()
+            client.deleted_at = datetime.now()
             session.commit()
             return True
 
@@ -593,7 +593,7 @@ def soft_delete_deal(deal_id: int):
                 print(f'Сделка с ID {deal_id} не найдена')
                 return False
 
-            deal.deleted_at = datetime.utcnow()
+            deal.deleted_at = datetime.now()
             session.commit()
             return True
 
@@ -1255,6 +1255,7 @@ def assign_expert_to_deal(deal_id, expert_id):
 
             deal.expert_id = expert_id
             deal.status_deal = 'В работе'  # Обновляем статус
+            deal.transfer_to_ke_datetime = datetime.now()
             session.commit()
             return True
         except Exception as e:

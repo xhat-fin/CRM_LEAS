@@ -14,18 +14,6 @@ auth_bp = Blueprint('auth', __name__, template_folder='templates')
 
 
 
-# Декоратор для проверки прав
-def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'role' not in session or session['role'] != 'admin':
-            return jsonify({
-                "error": "access denied"
-            }), 403
-        return f(*args, **kwargs)
-    return decorated_function
-
-
 
 @auth_bp.route('/register/', methods=['GET', 'POST'])
 def register():
@@ -33,7 +21,7 @@ def register():
         username = request.form.get('username')
         full_name = request.form.get('full_name')
         password = request.form.get('password')
-        role_id = 1
+
 
         if not all([username, full_name, password]):
             flash('Все поля обязательны для заполнения', 'error')
@@ -44,7 +32,7 @@ def register():
             return redirect(url_for('auth.register'))
 
         try:
-            bd.create_users(username=username, full_name=full_name, password=password, role_id=role_id)
+            bd.create_users(username=username, full_name=full_name, password=password)
             flash('Регистрация прошла успешно! Теперь вы можете войти.', 'success')
             return redirect(url_for('auth.login'))
         except Exception as e:
@@ -69,6 +57,8 @@ def login():
         if user:
             session['user_id'] = user.id
             session['username'] = user.username
+            if not user.role:
+                return redirect(url_for('auth.no_role'))
             session['role'] = user.role.name
             flash('Вы успешно вошли в систему!', 'success')
             if user.role.name == 'admin':
@@ -90,3 +80,9 @@ def logout():
     session.clear()
     flash('Вы успешно вышли из системы', 'info')
     return redirect(url_for('auth.login'))
+
+
+@auth_bp.route('/no-role/')
+def no_role():
+    return render_template('auth/no_role.html')
+

@@ -162,7 +162,6 @@ def update_deal(id):
                 'application_datetime': request.form.get('application_datetime') or None,
                 'type_document': request.form.get('originals_or_scans') or None,
                 'body_decision': request.form.get('decision_making_body') or None,
-                'transfer_to_ke_datetime': request.form.get('transfer_to_ke_datetime') or None,
                 'status_deal': request.form.get('application_status') or None,
                 'creditworthiness': request.form.get('creditworthiness') or None,
                 'deal_currency': request.form.get('deal_currency') or None,

@@ -551,7 +551,7 @@ def get_clients_by_id(id):
         return redirect(url_for('admin.index'))
 
 
-@admin_bp.route('/clients/create', methods=['GET', 'POST'])
+@admin_bp.route('/clients/create/', methods=['GET', 'POST'])
 @admin_required
 def create_client():
     if request.method == 'POST':

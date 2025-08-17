@@ -323,11 +323,6 @@
                                        value="{{ deal.application_datetime.strftime('%Y-%m-%dT%H:%M') if deal.application_datetime else '' }}">
                             </div>
 
-                            <div class="mb-3">
-                                <label for="transfer_to_ke_datetime" class="form-label">Дата передачи в КЭ</label>
-                                <input type="datetime-local" class="form-control" id="transfer_to_ke_datetime" name="transfer_to_ke_datetime"
-                                       value="{{ deal.transfer_to_ke_datetime.strftime('%Y-%m-%dT%H:%M') if deal.transfer_to_ke_datetime else '' }}">
-                            </div>
 
                             <div class="mb-3">
                                 <label for="kk_datetime" class="form-label">Дата КК</label>

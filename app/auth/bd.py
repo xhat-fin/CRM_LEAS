@@ -42,11 +42,11 @@ def create_role(name_role):
 
 
 # создание пользователя
-def create_users(username, full_name, password, role_id):
+def create_users(username, full_name, password):
     with Session() as session:
         try:
             password_hash = generate_password_hash(password)
-            user = User(username=username, full_name=full_name, password_hash=password_hash, role_id=role_id)
+            user = User(username=username, full_name=full_name, password_hash=password_hash)
             session.add(user)
             session.commit()
         except Exception as e:

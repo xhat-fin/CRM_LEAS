@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ожидание подтверждения доступа</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .waiting-container {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .status-icon {
+            font-size: 60px;
+            color: #0d6efd;
+            margin-bottom: 20px;
+        }
+        .game-container {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f1f8ff;
+            border-radius: 8px;
+            border-left: 4px solid #0d6efd;
+        }
+        #guess-input {
+            max-width: 200px;
+            margin: 0 auto 15px;
+        }
+        .attempts {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="waiting-container">
+            <div class="status-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-hourglass-split" viewBox="0 0 16 16">
+                    <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2h-7zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48V8.35zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"/>
+                </svg>
+            </div>
+            <h2 class="mb-3">Ваш доступ находится на рассмотрении</h2>
+            <p class="lead text-muted">
+                Администратор системы должен назначить вам соответствующие права доступа.<br>
+            </p>
+
+            <div class="game-container">
+                <h4 class="mb-4">Пока вы ждёте, предлагаем небольшую игру</h4>
+                <p>Угадайте число от 1 до 100:</p>
+
+                <div class="mb-3">
+                    <input type="number" id="guess-input" class="form-control" min="1" max="100" placeholder="Введите число">
+                </div>
+                <button id="guess-button" class="btn btn-primary mb-3">Проверить</button>
+
+                <div id="result" class="mb-2 fw-bold"></div>
+                <div id="attempts" class="attempts"></div>
+                <button id="restart-button" class="btn btn-sm btn-outline-secondary mt-2" style="display:none;">Начать заново</button>
+            </div>
+            <br>
+            <a href="{{ url_for('auth.login') }}"><b>Авторизоваться</b></a>
+        </div>
+    </div>
+
+    <script>
+        // Простая игра "Угадай число"
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+        let attempts = 0;
+        const maxAttempts = 7;
+
+        document.getElementById('guess-button').addEventListener('click', checkGuess);
+        document.getElementById('restart-button').addEventListener('click', restartGame);
+        document.getElementById('guess-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkGuess();
+        });
+
+        function checkGuess() {
+            const guessInput = document.getElementById('guess-input');
+            const resultDiv = document.getElementById('result');
+            const attemptsDiv = document.getElementById('attempts');
+            const restartBtn = document.getElementById('restart-button');
+
+            const userGuess = parseInt(guessInput.value);
+
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                resultDiv.textContent = 'Пожалуйста, введите число от 1 до 100';
+                resultDiv.className = 'mb-2 fw-bold text-danger';
+                return;
+            }
+
+            attempts++;
+            attemptsDiv.textContent = `Попытка ${attempts} из ${maxAttempts}`;
+
+            if (userGuess === randomNumber) {
+                resultDiv.textContent = `Поздравляем! Вы угадали число ${randomNumber} за ${attempts} попыток!`;
+                resultDiv.className = 'mb-2 fw-bold text-success';
+                guessInput.disabled = true;
+                restartBtn.style.display = 'inline-block';
+            } else if (attempts >= maxAttempts) {
+                resultDiv.textContent = `К сожалению, вы не угадали. Число было: ${randomNumber}`;
+                resultDiv.className = 'mb-2 fw-bold text-danger';
+                guessInput.disabled = true;
+                restartBtn.style.display = 'inline-block';
+            } else {
+                resultDiv.textContent = userGuess < randomNumber ? 'Слишком маленькое число!' : 'Слишком большое число!';
+                resultDiv.className = 'mb-2 fw-bold text-warning';
+            }
+
+            guessInput.value = '';
+            guessInput.focus();
+        }
+
+        function restartGame() {
+            randomNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            document.getElementById('guess-input').disabled = false;
+            document.getElementById('result').textContent = '';
+            document.getElementById('attempts').textContent = '';
+            document.getElementById('restart-button').style.display = 'none';
+            document.getElementById('guess-input').focus();
+        }
+    </script>
+</body>
+</html>
