@@ -11,10 +11,10 @@ from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
 
 from typing import Optional, Dict, Any, List
+import os
 
 
 load_dotenv()
-
 
 
 class Base(DeclarativeBase):
@@ -118,7 +118,6 @@ class User(Base):
         back_populates="accounter",
         foreign_keys="Deal.accounter_id"
     )
-
 
 
     # Технические поля
@@ -246,8 +245,8 @@ class Deal(Base):
         return f"<Deal(id={self.id}, client_id={self.client_id}, status='{self.status_deal}')>"
 
 
-# DB_URL = f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
-DB_URL = "postgresql+psycopg2://postgres:Totem123@localhost/leasing"
+DB_URL = f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
+
 engine = create_engine(DB_URL)
 Session = sessionmaker(bind=engine)
 Base.metadata.create_all(engine)
@@ -471,7 +470,6 @@ def update_users(user_id: int, username: Optional[str] = None,
             raise  # Пробрасываем исключение дальше для обработки в роуте
         finally:
             session.close()
-
 
 
 # обновление роли

@@ -19,7 +19,8 @@ load_dotenv()
 
 
 
-DB_URL = "postgresql+psycopg2://postgres:Totem123@localhost/leasing"
+DB_URL = f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
+
 
 engine = create_engine((DB_URL), echo=True)
 Session = sessionmaker(bind=engine)
