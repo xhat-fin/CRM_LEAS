@@ -3,9 +3,9 @@ from functools import wraps
 from flask import jsonify, render_template, request, flash, redirect, url_for, Blueprint
 from flask import session as user_session
 from dotenv import load_dotenv
-from app.manager import bd
-from app.admin.bd import User, Role
-from app.admin.bd import (read_status_deals, read_type_deals, read_currency,
+from CRM_LEAS.app.manager import bd
+from CRM_LEAS.app.admin.bd import User, Role
+from CRM_LEAS.app.admin.bd import (read_status_deals, read_type_deals, read_currency,
                           read_body_decisions, read_type_documents,
                           read_creditworthiness, read_stage_deals,
                           read_type_clients)

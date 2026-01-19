@@ -3,7 +3,7 @@ from functools import wraps
 
 from flask import Flask, jsonify, render_template, request, flash, redirect, url_for, session, Blueprint
 from dotenv import load_dotenv
-from app.auth import bd
+from CRM_LEAS.app.auth import bd
 from datetime import datetime
 
 
@@ -85,4 +85,3 @@ def logout():
 @auth_bp.route('/no-role/')
 def no_role():
     return render_template('auth/no_role.html')
-

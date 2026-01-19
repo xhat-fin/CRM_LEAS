@@ -7,7 +7,7 @@ from sqlalchemy.orm import DeclarativeBase, mapped_column, sessionmaker, joinedl
 from dotenv import load_dotenv
 
 from typing import Optional, Dict, Any
-from app.admin.bd import Client, Deal
+from CRM_LEAS.app.admin.bd import Client, Deal
 
 load_dotenv()
 

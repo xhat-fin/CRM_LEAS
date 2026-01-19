@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 from typing import Optional, Dict, Any, List
 
-from app.admin.bd import Client, Deal
+from CRM_LEAS.app.admin.bd import Client, Deal
 import os
 load_dotenv()
 

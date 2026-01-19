@@ -12,7 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 
 from typing import Optional, Dict, Any, List
-from app.admin.bd import Role, User
+from CRM_LEAS.app.admin.bd import Role, User
 
 
 load_dotenv()
